@@ -1,15 +1,22 @@
-module "vnet" {
-  source = "../../modules/vnet"
+terraform {
+  required_version = ">= 1.5.0"
 
-  resource_group_name = "rg-dev-network"
-  location            = "East US"
-  vnet_name           = "vnet-dev"
+  backend "remote" {
+    organization = "YOUR_TF_ORG"
 
-  address_space = ["10.0.0.0/16"]
-
-  subnets = {
-    web  = ["10.0.1.0/24"]
-    app  = ["10.0.2.0/24"]
-    db   = ["10.0.3.0/24"]
+    workspaces {
+      name = "azure-dev"
+    }
   }
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
 }
